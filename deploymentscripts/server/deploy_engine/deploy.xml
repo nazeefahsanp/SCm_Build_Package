@@ -437,8 +437,8 @@ xmlns:unless="ant:unless">
 		
 		<echo message="Server Tags updated :  ${PWC_config_file}"/>
 		
-		<property name="full.index" value="Y">
-		<import.3DSpace.index script="deploy.tcl" procedure="import3DSpaceIndex" config.file="${PWC_config_file}" full.index="${full.index}"/> <!--import 3d space index-->
+		<property name="full.index" value="Y"/>
+		<import.3DSpace.index script="deploy.tcl" procedure="import3DSpaceIndex" config.file="C:/Apps/jenkins/workspace/SCM_Project/pwc.master.build.20200630120005_20200630120006/server/platform_management/3DSpaceIndex/PWC_config.xml" full.index="${full.index}"/> <!--import 3d space index-->
 		<echo message="Import 3D Space Index successful !!"/>
 
 	</target>
@@ -446,6 +446,14 @@ xmlns:unless="ant:unless">
 	<!--######################################### Copying files to output structure #########################################-->
 	<target name="create.output_package" depends="init" description="Create Output package"> 
 
+	    <!--Checking if input origin tag is available-->
+		<condition property="no_origin_tag">
+        		<equals arg1="${input.origin.tag}" arg2=""/>
+		</condition>
+
+		<property name="output_package" value="${output_package_without_origin_tag}" if:set="no_origin_tag"/> <!--if input origin tag not available-->
+		<property name="output_package" value="${output_package_with_origin_tag}" unless:set="no_origin_tag"/> <!--if input origin tag available-->
+		
      	<!--Copying customization.info and Procedure for build installation.docx-->
 	    <copy todir="${output_package}/../../">
 			<fileset dir="${baseDir}" includes="customization.info"/>

@@ -1,0 +1,62 @@
+// ==============================================================================
+// Syntax: 
+//   MASK DEFAULT
+//   ENTITY <entity>
+//   ATTR   <attr>;<required>;<are_values_authorized_values>;<def_val>
+//   VALUE  <value>
+//   FUNC   <method>
+//   FATTR  <attr>;<modif>
+// with: <entity>   = entity name
+//       <attr>     = atribute name
+//       <required> = required attr logical flag (Y or N)
+//       <are_values_authorized_values>
+//                  = authorized values logical flag (Y or N):
+//                    N -> help values / Y -> authorized values
+//       <def_val>  = default value
+//       <value>    = a string value (can have blanks)
+//                    When <are_values_authorized_values> equals:
+//                    N -> an help value / Y -> an authorized value
+//       <method>   = one of the following operations:
+//                    Create         : attr appears in creation panels
+//                    Read/List/Tree : attr appears in browse/query result panels
+//                    Write          : attr appears in properties panels
+//                    Query/EZQuery  : attr appears in query condition panels
+//       <modif>    = writable field logical flag (Y or N):
+//                    N -> NOT modifiable / Y -> modifiable
+// ==============================================================================
+MASK DEFAULT
+// --------------------------------------------------
+ENTITY DCBDecision_DCB @Inherits 
+// --------------------------------------------------
+ATTR DCBDecision_DCB_DecisionType;N;Y;Non-Policy;$
+VALUE Policy
+VALUE Non-Policy
+ATTR DCBDecision_DCB_DecisionSubType;N;Y;NA;$
+VALUE Project
+VALUE NA
+VALUE SolutionDeployment
+VALUE Schedule
+VALUE Budget
+VALUE BSAR
+VALUE AcceptanceCriteria
+VALUE GateCriteria
+VALUE Other
+FUNC Create
+FATTR DCBDecision_DCB_DecisionType;Y
+FATTR DCBDecision_DCB_DecisionSubType;Y
+FUNC Query
+FATTR DCBDecision_DCB_DecisionType;Y
+FATTR DCBDecision_DCB_DecisionSubType;Y
+FUNC EZQuery
+FATTR DCBDecision_DCB_DecisionType;Y
+FATTR DCBDecision_DCB_DecisionSubType;Y
+FUNC Write
+FATTR DCBDecision_DCB_DecisionType;Y
+FATTR DCBDecision_DCB_DecisionSubType;Y
+FUNC Read
+FATTR DCBDecision_DCB_DecisionType;Y
+FATTR DCBDecision_DCB_DecisionSubType;Y
+FUNC Tree
+FUNC List
+FATTR DCBDecision_DCB_DecisionType;Y
+FATTR DCBDecision_DCB_DecisionSubType;Y

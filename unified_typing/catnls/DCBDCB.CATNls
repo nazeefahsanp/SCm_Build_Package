@@ -1,0 +1,16 @@
+﻿<meta charset="UTF-8"/>
+DCBDCB = "DCBDCB";
+DCBDCB.DCBDecision_DCB = "Decision DCB";
+DCBDCB.DCBDecision_DCB.DCBDecision_DCB_DecisionType = "Decision Type";
+DCBDCB.DCBDecision_DCB.DCBDecision_DCB_DecisionType.Range.Equal.Policy = "Policy";
+DCBDCB.DCBDecision_DCB.DCBDecision_DCB_DecisionType.Range.Equal.Non-Policy = "Non-Policy";
+DCBDCB.DCBDecision_DCB.DCBDecision_DCB_DecisionSubType = "Decision SubType";
+DCBDCB.DCBDecision_DCB.DCBDecision_DCB_DecisionSubType.Range.Equal.Project = "Project";
+DCBDCB.DCBDecision_DCB.DCBDecision_DCB_DecisionSubType.Range.Equal.NA = "NA";
+DCBDCB.DCBDecision_DCB.DCBDecision_DCB_DecisionSubType.Range.Equal.SolutionDeployment = "Solution Deployment";
+DCBDCB.DCBDecision_DCB.DCBDecision_DCB_DecisionSubType.Range.Equal.Schedule = "Schedule";
+DCBDCB.DCBDecision_DCB.DCBDecision_DCB_DecisionSubType.Range.Equal.Budget = "Budget";
+DCBDCB.DCBDecision_DCB.DCBDecision_DCB_DecisionSubType.Range.Equal.BSAR = "BSAR";
+DCBDCB.DCBDecision_DCB.DCBDecision_DCB_DecisionSubType.Range.Equal.AcceptanceCriteria = "Acceptance Criteria";
+DCBDCB.DCBDecision_DCB.DCBDecision_DCB_DecisionSubType.Range.Equal.GateCriteria = "Gate Criteria";
+DCBDCB.DCBDecision_DCB.DCBDecision_DCB_DecisionSubType.Range.Equal.Other = "Other";

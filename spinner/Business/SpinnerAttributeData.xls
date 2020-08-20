@@ -1,3 +1,3 @@
 Attribute Name	Registry Name	Scope	Owner	Type	Description	Default	Ranges (use "|" delim)	Multiline (boolean)	Hidden (boolean)	Dimension	Max Length (int)	ResetonClone (boolean)	ResetonRevision (boolean)	Icon File	ValueType	CustomerExposition(ReadOnly)	Protection(ReadOnly)
-PWC_SCM_TEST_Attribute_2	PWC_SCM_TEST_Attribute_2			string	SCM Test Attribute			FALSE	FALSE		0	FALSE	FALSE				
-PWC_SCM_TEST_Attribute_3	PWC_SCM_TEST_Attribute_3			string	PWC attribute - SCM Test		=Range1 | =Range2	FALSE	FALSE		0	
+PWC_SCM_TEST_Attribute_4	PWC_SCM_TEST_Attribute_4			string	SCM Test Attribute			FALSE	FALSE		0	FALSE	FALSE				
+PWC_SCM_TEST_Attribute_5	PWC_SCM_TEST_Attribute_5			string	PWC attribute - SCM Test		=Range1 | =Range2	FALSE	FALSE		0	

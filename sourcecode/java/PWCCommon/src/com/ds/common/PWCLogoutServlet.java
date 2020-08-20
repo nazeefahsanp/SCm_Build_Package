@@ -18,7 +18,7 @@ public class PWCLogoutServlet extends LogoutServlet
 	 */
 	private static final long serialVersionUID = 921415799204604478L;
 	private static final Logger _LOG = Logger.getLogger("PWCLogoutServlet");
-	
+	//SCM Test
 	public void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException
 	{
 		_LOG.debug("Start PWCLogoutServlet::doGet()");

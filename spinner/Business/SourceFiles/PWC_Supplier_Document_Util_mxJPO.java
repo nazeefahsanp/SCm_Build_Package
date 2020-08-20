@@ -35,7 +35,7 @@ import com.matrixone.apps.library.LibraryCentralConstants;
 
 
 public class PWC_Supplier_Document_Util_mxJPO {
-
+	//SCM Test
 	private static final Logger logger = Logger.getLogger("PWC_Supplier_Document_Util");
 	public static final String REL_PROJECTPART = PropertyUtil.getSchemaProperty("relationship_PWC_ProjectPart");
 	public static final String STR_ATTR_ROUTE_COMPLETION_ACTION = PropertyUtil.getSchemaProperty("attribute_RouteCompletionAction");

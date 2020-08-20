@@ -1,6 +1,6 @@
 <INDEXER>
-  <CHUNK size="10000"/>
-  <DATABASE name="AdvancedSearchDB0"/>
+  <CHUNK size="10000"/>
+  <DATABASE name="AdvancedSearchDB0"/>
   <PROVIDER name="XL"/>
   <SERVER baseport="19000" host="ds-ina901x36m.hclt.corp.hcl.in" nbSlices="1"/>
   <APPLICATION active="true" name="AER"/>

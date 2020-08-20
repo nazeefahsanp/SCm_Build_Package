@@ -1,5 +1,6 @@
 <?xml version="1.0" ?>
 <TeamParameterization date="Wed Nov 06 09:32:42 CEST 2019" version="3DEXPERIENCE R2019x HotFix 5">
+<!--test SCM-->
 <!--Exported parameters XML file should never be modified manually. Modifying such file and reimporting it can trigger major impacts on your environment !--><Parameter description="Boolean attribute -BOM ITEM- on VPMReference" name="AddAttribute" id="Param_000001" category="AttributeDef">VPMReference|Boolean|BOM_ITEM|BOM ITEM|FALSE|TRUE,FALSE|TRUE|FALSE,TRUE,FALSE,FALSE|FALSE|TRUE|</Parameter>
 <Parameter description="Attributes order on VPMReference (BOM ITEM)" name="AddAttributeOrder" id="Param_000002" category="AttributeDef">VPMReference|BOM ITEM</Parameter>
 <Parameter description="Parameter WinCommand of domain DataAccessRight" name="WinCommand" id="Param_000003" category="DataAccessRight">Leader</Parameter>

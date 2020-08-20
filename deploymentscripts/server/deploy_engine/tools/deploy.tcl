@@ -254,7 +254,7 @@ eval {
 		set needFullIndex [mql get env NEED_FULL_INDEX]
 
 		set ierr [ catch {
-			eval "mql set system searchindex file $configPath"
+			eval "mql set system searchindex file '$configPath'"
 			puts "PWC_Config updated to the searchindex"
 
 			if { $needFullIndex == "Y" } {
