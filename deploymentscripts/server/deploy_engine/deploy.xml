@@ -1,0 +1,470 @@
+<project name="PWC_Deployment_Procedure" default="main" 
+xmlns:if="ant:if"
+xmlns:unless="ant:unless">
+
+	<!--path declaration start-->
+	 <taskdef resource="net/sf/antcontrib/antlib.xml"> <!--task definition for ant-contrib jar-->
+	    <classpath>
+	        <pathelement location="../deploy_engine/tools/ant-contrib-1.0b3.jar"/>
+	    </classpath>
+	</taskdef>
+
+	<property file="${env.SERVER_DEPLOY_PROPERTIES_FILE}"/> <!--custom deployment property file-->
+	<property file="../deploy.properties"/> <!--default deployment property file-->
+
+	<property name="baseDir" location="../../.."/> <!--the main build package-->
+	<basename property="base_dir_name" file="${baseDir}"/>
+
+	<!--customization.info file-->
+	<property name="file_customization.info" location="${baseDir}/customization.info"/> <!--the main build package-->
+
+	<property name="scriptsDir" location="${baseDir}/server/scripts"/> <!--scripts directory-->
+
+    <!--script directories-->
+	<property name="cleanup" location="${baseDir}/server/cleanup"/> <!--cleanup directory-->
+	<property name="onetime_scripts" location="${scriptsDir}/OneTimeScripts"/> <!--OneTimeScripts dir under scripts dir-->
+	<property name="preconfig_scripts" location="${scriptsDir}/PreConfig"/> <!--PreConfig dir under scripts dir-->
+	<property name="postconfig_scripts" location="${scriptsDir}/PostConfig"/> <!--PostConfig dir under scripts dir-->
+
+	<property name="spinner" location="${baseDir}/server/spinner"/> <!--spinner directory-->
+
+ 	<!--unified_typing under platform_management-->
+	<property name="unified_typing" location="${baseDir}/server/unified_typing"/>
+
+	<!--enovia WEB fregment-->
+	<property name="enovia_dir" location="${baseDir}/server/enovia"/> <!--enovia WEB-INF dir under build package-->
+	
+	<property name="enovia.WEB-INF" location="${enovia_dir}/WEB-INF"/> <!--enovia WEB-INF dir under build package-->
+	<property name="enovia.WEB-INF.classes" location="${enovia.WEB-INF}/classes"/> <!--enovia WEB-INF classes dir-->
+	<property name="enovia.vplm.mask" location="${enovia.WEB-INF.classes}/vplm/mask"/>  <!--enovia vplm mask dir-->
+
+	<!--server install directory and sub directories-->
+	<property name="server_install_scripts" value="${SRV_INSTALL}/win_b64/code/command"/> <!--scripts dir under SRV_INSTALL dir-->
+	<property name="server_install_fragment" value="${SRV_INSTALL}/win_b64/resources/warutil/fragment"/> <!--warutil/fragment dir-->
+	<property name="server_install_custom" value="${SRV_INSTALL}/win_b64/docs/custom"/> <!--docs/custom dir-->
+	<property name="server_install_code" value="${SRV_INSTALL}/win_b64/code"/> <!--code directory-->
+	<property name="server_install_distrib_cas" value="${SRV_INSTALL}/distrib_CAS/${enovia.webapp.cas.name}"/> <!--server install distrib_CAS 3dspace dir-->
+	<property name="server_install_distrib_nocas" value="${SRV_INSTALL}/distrib_NoCAS/${enovia.webapp.nocas.name}"/> <!--server install distrib_NoCAS internal dir-->
+
+	
+	<!--platform_management sub directories and files-->
+	<property name="platform_management_dir" location="${baseDir}/server/platform_management"/> <!--6wvocabularies under platform_management-->
+	<property name="6wvocabularies" location="${platform_management_dir}/Vocabulary"/> <!--6wvocabularies under platform_management-->
+	<property name="PWC_config_file" location="${platform_management_dir}/3DSpaceIndex/PWC_config.xml"/> <!--PWC_config.xml file with full path-->
+	<property name="Parametrization_Export_file" value="${platform_management_dir}/Configuration/PWC_TeamParametrization_Export.xml"/> <!--PWC_ Parametrization_Export.xml file full path-->
+	<property name="PWC_POStructure_file" value="${platform_management_dir}/PnO/PWC_POStructure.txt"/> <!--PWC_ PWC_POStructure.txt file full path-->
+
+	<!--Output package directory structure-->
+	<property name="output_package_with_origin_tag" value="${baseDir}/../pwc.${repoBranchName}.deployment.${input.origin.tag}.${target.tag}.${ENV}/server/logs"/> <!--output package with origin tag-->
+	<property name="output_package_without_origin_tag" value="${baseDir}/../pwc.${repoBranchName}.deployment.${target.tag}.${ENV}/server/logs"/> <!--output package without origin tag-->
+
+	<!--path declaration ends-->
+	
+	<!--taking current time to append in log file name-->
+	<tstamp>
+		<format property="dateTime" pattern="yyyyMMddhhmmss" unit="hour"/> <!--taking the current timestamp-->
+	</tstamp>
+																											  
+	<!--Updating server details in PWC_config.xml file-->
+	<available file="${PWC_config_file}" type="file" property="config_file_exist"/> <!--check if the config file exists before executing-->
+
+	<!--task to execute tcl script with below attributes-->
+	<macrodef name="run.script">
+		<attribute name="script"/>
+		<attribute name="procedure"/>
+		<attribute name="directory"/>
+
+		<sequential>
+			<available file="@{directory}" type="dir" property="@{directory}_exist"/> <!--check if the directory available before executing-->
+			<echo message="DIRECTORY DOESNOT EXIST : @{directory}" unless:set="@{directory}_exist"/>		
+			<exec executable="mql" dir="./tools" resultproperty="return.@{script}.@{procedure}" failonerror="true" if:set="@{directory}_exist">
+				<arg line="-c 'set context user creator password &quot;${enovia.server.admin.password}&quot; ;set env TCL_PROC @{procedure}; set env DIRECTORY &quot;&quot;@{directory}&quot;&quot; ; run &quot;@{script}&quot; ;'" if:set="enovia.server.admin.password"/>
+				<arg line="-c 'set context user creator ;set env TCL_PROC @{procedure}; set env DIRECTORY &quot;&quot;@{directory}&quot;&quot; ; run &quot;@{script}&quot; ;'" unless:set="enovia.server.admin.password"/>
+			</exec>
+			<echo message="ANT result of @{script} : ${return.@{script}.@{procedure}}" if:set="@{directory}_exist"/>
+		</sequential>
+	</macrodef>
+	
+	<!--task to import 6WVocabularies-->
+	<macrodef name="import.6WVoc">
+		<attribute name="script"/>
+		<attribute name="procedure"/>
+		<attribute name="directory"/>
+
+		<sequential>
+			<available file="@{directory}" type="dir" property="@{directory}_exist"/> <!--check if the directory available before executing-->
+			<echo message="DIRECTORY DOESNOT EXIST : @{directory}" unless:set="@{directory}_exist"/>		
+			<exec executable="${enovia.server.mql.executable}" dir="./tools" resultproperty="return.@{script}.@{procedure}" failonerror="true" if:set="@{directory}_exist">
+				<arg line="-c 'set context user creator password &quot;${enovia.server.admin.password}&quot; ;set env TCL_PROC @{procedure}; set env DIRECTORY &quot;&quot;@{directory}&quot;&quot; ;set env USERNAME &quot;${platform.admin.user}&quot; ;set env PASSWORD &quot;${platform.nocas.admin.password}&quot; ;run &quot;@{script}&quot; ;'" if:set="enovia.server.admin.password"/>
+				<arg line="-c 'set context user creator ;set env TCL_PROC @{procedure}; set env DIRECTORY &quot;&quot;@{directory}&quot;&quot; ;set env USERNAME &quot;${platform.admin.user}&quot; ;set env PASSWORD &quot;${platform.nocas.admin.password}&quot; ;run &quot;@{script}&quot; ;'" unless:set="enovia.server.admin.password"/>
+			</exec>
+			<echo message="ANT result of @{script} : ${return.@{script}.@{procedure}}" if:set="@{directory}_exist"/>
+		</sequential>
+	</macrodef>
+
+	<!--task to import 3D space index by passing config file-->
+	<macrodef name="import.3DSpace.index">
+		<attribute name="script"/>
+		<attribute name="procedure"/>
+		<attribute name="config.file"/>
+		<attribute name="full.index"/>
+
+		<sequential>
+			<exec executable="${enovia.server.mql.executable}" dir="./tools" resultproperty="return.@{script}.@{procedure}" failonerror="true">
+				<arg line="-c 'set context user creator password &quot;${enovia.server.admin.password}&quot; ;
+							set env TCL_PROC @{procedure};
+							set env PWC_CONFIG_FILE @{config.file};
+							set env NEED_FULL_INDEX @{full.index};
+							run &quot;@{script}&quot; ;'" if:set="enovia.server.admin.password"/>
+
+				<arg line="-c 'set context user creator;
+							set env TCL_PROC @{procedure};
+							set env PWC_CONFIG_FILE @{config.file};
+							set env NEED_FULL_INDEX @{full.index};
+							run &quot;@{script}&quot; ;'" unless:set="enovia.server.admin.password"/>
+			</exec>
+			<echo message="ANT result of @{script} : ${return.@{script}.@{procedure}}"/>
+		</sequential>
+	</macrodef>
+
+	<!--task to gererate war-->
+	<macrodef name="generate_war">
+		<attribute name="script"/>
+		<attribute name="directory"/>
+
+		<sequential>
+			<exec executable="${enovia.server.cmd.executable}" dir="${server_install_scripts}" resultproperty="return.@{script}" failonerror="true">
+				<arg line="/c @{script}"/>
+			</exec>
+			<echo message="War generation completed : @{script}"/>
+		</sequential>
+	</macrodef>
+
+	<!--Generate custom WAR file-->
+	<macrodef name="generate_custom_war">
+		<attribute name="directory"/>
+		<attribute name="war.file.name"/>
+		<attribute name="web.xml.file"/>
+
+		<sequential>
+			<war warfile="@{war.file.name}" webxml="@{web.xml.file}">
+				<fileset dir="@{directory}">
+					<exclude name="WEB-INF/web.xml" />
+				</fileset>
+
+				<!--Updating MANIFEST.MF file with customization details-->
+				<manifest>
+				    <attribute name="pwc_product_name" value="${pwc_product_name}"/>
+					<attribute name="pwc_product_version" value="${pwc_product_version}"/>
+				    <attribute name="pwc_product_version_HF" value="${pwc_product_version_HF}"/>
+				    <attribute name="pwc_product_version_HF_version" value="${pwc_product_version_HF_version}"/>
+					<attribute name="pwc_product_deployment" value="${base_dir_name}"/>
+				</manifest>
+			</war>
+			<echo message="WAR generation successful !!"/>
+		</sequential>
+	</macrodef>
+
+
+	<!--task to import unified_typing-->
+	<macrodef name="import.unified_typing">
+		<attribute name="directory"/>
+		<sequential>
+			<available file="${unified_typing}/@{directory}" type="dir" property="@{directory}_exist"/> <!--check if the directory available before executing-->
+			<echo message="DIRECTORY DOESNOT EXIST : ${unified_typing}\@{directory}" unless:set="@{directory}_exist"/>
+			
+			<echo message="Executing : @{directory}" if:set="@{directory}_exist"/>
+			<!--Iterating all the .zip files available under directory-->
+  			<foreach target="execute.unified_typing" param="ZipFile" if:set="@{directory}_exist">
+				<path>
+    				<fileset dir="${unified_typing}/@{directory}" includes="**/*.zip"/>
+				</path>
+ 			 </foreach>
+		</sequential>
+	</macrodef>
+	
+	<!--This target will be called from macrodef import.unified_typing for every .zip file under unified_typing-->
+	<target name="execute.unified_typing" description="unified_typing specialization and administration">											  
+	    <echo message="Package Name : ${ZipFile}"/>
+		<exec dir="${server_install_scripts}" executable="${enovia.server.cmd.executable}"  failonerror="true">																					
+			<arg line="/c CustoDataTool2.bat -user creator -file &quot;${ZipFile}&quot;"/>
+		</exec>
+	</target>
+
+    <!--main target to execute all the other tasks-->
+	<!--<target name="main" depends="create.output_dir,init,print_Info.build_check,generate.OOTB_war,execute.cleanup,
+	execute.onetime_scripts,execute.preconfig_scripts,platform_management.configuration,platform_management.PnO,
+	platform_management.6WVocabularies,unified_typing,execute.spinner,execute.postconfig_scripts,
+	register.customization,mask_compilation,custom_war,compile.JPOs,import.3DSpaceIndex,create.output_package"/>-->
+
+
+	<target name="main" depends="create.output_dir,init,custom_war,create.output_package"/>
+
+<!--######################################### Creating output directory structure #########################################-->
+	<target name="create.output_dir"  description="Create Output directory"> 
+
+	    <!--Checking if input origin tag is available-->
+		<condition property="no_origin_tag">
+        		<equals arg1="${input.origin.tag}" arg2=""/>
+		</condition>
+
+		<property name="output_package" value="${output_package_without_origin_tag}" if:set="no_origin_tag"/> <!--if input origin tag not available-->
+		<property name="output_package" value="${output_package_with_origin_tag}" unless:set="no_origin_tag"/> <!--if input origin tag available-->
+
+		<mkdir dir="${output_package}"/> <!--creating deployment package-->
+		<echo message="Output directory created successfully !!"/>
+
+		<property name="deployment.log" location="${output_package}/deployment_${dateTime}.log"/> <!--creating a log file deployment_<TimeStamp>.log-->
+
+	</target>							  
+	<!--init target to update the logs-->
+	<target name="init">
+		<record name="${deployment.log}" loglevel="info" append="false"/>
+	</target>
+	
+	<!--printing OOTB and custom details and checking if the origin tag is same as the last build installed-->
+	<target name="print_Info.build_check" depends="init" description="Print OOTB and customization details" if:set="cleanup.dir.exist">
+		<run.script script="manageCustomization.tcl" procedure="printInforAndCheckForBuild" directory="."/>
+	</target>
+
+
+<!--############ Moving all *.web.xml.part files from enovia/WEB-INF to SRV_INSTALL/warutil/fragment dir ##############-->
+	<target name="copy_web_fragment" description="Move files *.web.xml.part from WEB_INF to warutil/fragment">
+		<fileset id="web_xml_part_list" dir="${enovia.WEB-INF}" includes="**/*.web.xml.part"/>
+		<property name="prop.web.xml.part" refid="web_xml_part_list"/>
+		<propertyregex property="multiple_xml_files" input="${prop.web.xml.part}" regexp=";" replace="," global="true"/>
+
+		<property name="custom.xml.files" value="${multiple_xml_files}" if:set="multiple_xml_files"/> <!--if multiple jar files-->
+		<property name="custom.xml.files" value="${prop.web.xml.part}" unless:set="multiple_xml_files"/> <!--if only one jar file-->
+
+        	<condition property="no_files">
+            		<equals arg1="${custom.xml.files}" arg2=""/>
+			</condition>
+	
+	    	<copy todir="${server_install_fragment}" unless:set="no_files" overwrite="true">
+				<fileset dir="${enovia.WEB-INF}" includes="${custom.xml.files}"/>
+			</copy>
+
+		<echo message="Files copied from enovia/WEB-INF to SEV_INSTALL warutil fragment successfully !!"/>
+	</target>
+
+
+<!--################################# Generating OOTB war : CAS and NoCAS- ###########################################-->
+	<target name="generate.OOTB_war" description="Generate OOTB war : CAS and NoCAS" depends="init,copy_web_fragment">	
+
+		<!--<generate_war script="war_setup.bat" directory=""/>--> <!--deploy 3D space Cas-->	
+		<generate_war script="${enovia.war_setup.cas.script}" directory=""/> <!--deploy 3D space Cas-->	
+		<generate_war script="${enovia.war_setup.nocas.script}" directory=""/><!--deploy 3D space No Cas-->	
+
+		<!--Deleting *.web.xml.part files from SRV_NSTALL/warutil/fragment-->
+ 		<delete unless:set="no_files">  
+			<fileset dir="${server_install_fragment}" includes="${custom.xml.files}"/>
+		</delete>
+
+		<echo message="Files deleted from SRV_INSTALL warutil fragment successfully !!"/>
+	</target>
+
+<!--########## Execute cleanup scripts only if the PWC customization installed (page pwcSystemInformation) ##########-->
+	<target name="execute.cleanup" depends="init" description="Execute cleanup"> 
+		<run.script script="deploy.tcl" procedure="executeCleanupDirectory" directory="${cleanup}"/>
+		<echo message="Cleanup scripts executed successfully !!"/>
+	</target>
+
+
+<!--#### Execute One time scripts only if the PWC customization is not installed installed (page pwcSystemInformation) ####-->
+	<target name="execute.onetime_scripts" description="Execute one time scripts"> 
+		<run.script script="deploy.tcl" procedure="executeOnetimeScripts" directory="${onetime_scripts}"/>
+		<echo message="One time scripts executed successfully !!"/>
+	</target>
+
+<!--######################################## Execute Pre-Config scripts ###########################################-->
+	<target name="execute.preconfig_scripts" depends="init" description="Execute Pre-Config scripts"> 
+		<run.script script="deploy.tcl" procedure="executeScripts" directory="${preconfig_scripts}"/>
+		<echo message="Pre-Config scripts executed successfully !!"/>
+	</target>
+
+<!--######################################## platform_management configuraiton ######################################-->
+	<target name="platform_management.configuration" depends="init" description="Platform_management  Configuration"> 
+
+		<available file="${platform_management_dir}/Configuration" type="dir" property="platform_config_dir_exist"/> <!--check if the directory available before executing-->
+		<echo message="DIRECTORY DOESNOT EXIST : ${platform_management_dir}/Configuration}" unless:set="platform_config_dir_exist"/>
+
+		<exec dir="${server_install_scripts}" executable="${enovia.server.cmd.executable}"  failonerror="true" if:set="platform_config_dir_exist">
+			<arg line="/c TeamParamServices.bat &quot;${platform.admin.user}&quot; &quot;${platform.nocas.admin.password}&quot; import &quot;${Parametrization_Export_file}&quot; ${3dspace_nocas_url}"/>
+		</exec>
+		<echo message="Platform_management Configuration setup successfully !!"/>
+	</target>
+
+<!--########################################### platform_management Pno  #############################################-->
+	<target name="platform_management.PnO" depends="init" description="Platform_management PnO configuration"> 
+
+		<available file="${platform_management_dir}/PnO" type="dir" property="platform_PnO_dir_exist"/> <!--check if the directory available before executing-->
+		<echo message="DIRECTORY DOESNOT EXIST : ${platform_management_dir}/PnO}" unless:set="platform_PnO_dir_exist"/>
+
+		<exec dir="${server_install_scripts}" executable="${enovia.server.cmd.executable}"  failonerror="true" if:set="platform_PnO_dir_exist">
+			<arg line="/c VPLMPosImport.bat -user &quot;${platform.admin.user}&quot; -password &quot;${platform.nocas.admin.password}&quot; -context &quot;${platform.admin.context}&quot; -file &quot;${PWC_POStructure_file}&quot;"/>
+		</exec>
+		<echo message="Platform_management PnO setup successfully !!"/>
+	</target>
+
+
+<!--######################################## platform_management 6W Vocabularies ######################################-->
+	<target name="platform_management.6WVocabularies" depends="init" description="Platform_management 6WVocabularies configuration"> 
+		<import.6WVoc script="deploy.tcl" procedure="configure6WVocabularies" directory="${6wvocabularies}"/>
+		<echo message="Platform_management 6WVocabularies setup successfully !!"/>
+	</target>
+
+<!--############################################# Configure unified_typing ############################################-->
+
+	<target name="unified_typing" depends="init" description="unified_typing specialization and administration"> 
+		<import.unified_typing directory="specialization" /> <!--calling macrodef import.unified_typing for specialization dir-->
+		<import.unified_typing directory="administration" /> <!--calling macrodef import.unified_typing for administration dir-->
+	</target>
+
+<!--################################################# Spinner Ececution ###############################################-->
+	<target name="execute.spinner" depends="init" description="Spinner execution"> 
+		<run.script script="deploy.tcl" procedure="executeSpinner" directory="${spinner}"/>
+		<echo message="Spinner executed successfully !!"/>
+	</target>
+
+<!--############################################# Execute Post-Config scripts #########################################-->
+	<target name="execute.postconfig_scripts" depends="init" description="Execute Post-Config scripts"> 
+		<run.script script="deploy.tcl" procedure="executeScripts" directory="${postconfig_scripts}"/> 
+		<echo message="Post-Config scripts executed successfully !!"/>
+	</target>
+
+<!--############################################# Register Customiztion info ##########################################-->
+	<target name="register.customization" depends="init" description="Register customization information"> 
+		<run.script script="manageCustomization.tcl" procedure="updateCostomizationInfo" directory="."/>
+		<echo message="Customization info updated successfully !!"/>
+	</target>
+
+<!--################################################## Compile Masks ##################################################-->
+	<target name="mask_compilation" depends="init" description="Compile all masks individually"> 
+
+		<!--Iterating all the masks available-->
+  		<foreach target="compile_mask" param="mask_dir">
+			<path>
+    			<dirset dir="${enovia.vplm.mask}" includes="**/*" excludes="DEFAULT"/>
+			</path>
+ 		</foreach>
+		<echo message="Masks compilation successfully !!"/>
+	</target>
+
+	<!--This target will be called for every mask-->
+	<target name="compile_mask" description="Compile individual mask"> 
+	    <!--Taking the name of the mask-->
+		<basename property="mask_name" file="${mask_dir}"/>
+		<echo message="Compiling mask : ${mask_name}"/>
+
+	 	<exec dir="${server_install_scripts}" executable="${enovia.server.cmd.executable}"  failonerror="true">
+			<arg line="/c VPLMPosMaskCompiler.bat -m &quot;${mask_name}&quot; -d ${enovia.vplm.mask} -connect  &quot;${3dspace_nocas_url}&quot;"/>													  
+		</exec>
+	</target>
+
+<!--############################################## Copying custom enovia ###############################################-->
+	<target name="copy_custom_enovia" depends="init" description="Print OOTB and customization details">
+
+		<delete file="${SRV_INSTALL}/distrib_CAS/3dspace.war"/> <!--deleting existing CAS WAR file-->
+
+		<!--Copying custom enovia over distrib_CAS-->
+		<copy todir="${SRV_INSTALL}/distrib_CAS/3dspace" overwrite="true">
+			<fileset dir="${enovia_dir}" excludes="**/*web.xml,**/*web.xml.part"/>	
+		</copy>
+		<echo message="Custom Enovia directory files copied to distrib_CAS!!"/>
+		
+
+		<delete file="${SRV_INSTALL}/distrib_CAS/internal.war"/> <!--deleting existing No CAS WAR file-->
+
+		<!--Copying custom enovia over distrib_NoCAS-->
+		<copy todir="${SRV_INSTALL}/distrib_NoCAS/internal" overwrite="true">
+			<fileset dir="${enovia_dir}" excludes="**/*web.xml,**/*web.xml.part"/>
+		</copy>
+		<echo message="Custom Enovia directory files copied to distrib_NoCAS!!"/>
+	</target>
+
+
+<!--############################################### Generate Custom WAR ################################################-->
+	<target name="custom_war" depends="init,copy_custom_enovia" description="Generate custom WAR for Cas and NoCas"> 
+		<property file="${file_customization.info}"/> <!--customization.info file-->
+
+		<generate_custom_war directory="${server_install_distrib_cas}"
+		 war.file.name="${SRV_INSTALL}/distrib_CAS/3dspace.war"
+		  web.xml.file="${server_install_distrib_cas}/WEB-INF/web.xml"/> <!--Generate 3dspace.war file-->	
+
+		<generate_custom_war directory="${server_install_distrib_nocas}" 
+		war.file.name="${SRV_INSTALL}/distrib_NoCAS/internal.war" 
+		web.xml.file="${server_install_distrib_nocas}/WEB-INF/web.xml"/> <!--Generate internal.war file-->	
+	</target>
+
+<!--################################################# JPO Compilaiton ##################################################-->
+	<target name="compile.JPOs" depends="init" description="Compile JPOs"> 
+
+		<fileset id="custom.jars" dir="${enovia.WEB-INF}/lib" includes="**/*.jar"/>
+		<property name="prop.custom.jars" refid="custom.jars"/>
+		<propertyregex property="multiple.jars" input="${prop.custom.jars}" regexp=";" replace="," global="true"/>
+		<property name="custom.jars.files" value="${multiple.jars}" if:set="multiple.jars"/> <!--if multiple jar files-->
+		<property name="custom.jars.files" value="${prop.custom.jars}" unless:set="multiple.jars"/> <!--if only one jar file-->
+
+        <condition property="no_jars">
+        		<equals arg1="${custom.jars.files}" arg2=""/>
+		</condition>
+			
+		<!--Copying the custom jar temporarily-->
+		<copy todir="${server_install_custom}" unless:set="no_jars" overwrite="true">
+		    <fileset dir="${enovia.WEB-INF}/lib" includes="${custom.jars.files}"/>
+		</copy>
+
+		<echo message="Custom jars copied successfully !!"/>
+
+		<!--Compiling all the JPOs-->
+		<run.script script="deploy.tcl" procedure="compileJPOs" directory="."/>
+		<echo message="JPO compilation successfully !!"/>
+
+		<!--Deleting the temporary Custom Jars-->
+		<delete unless:set="no_jars">
+ 			 <fileset dir="${server_install_custom}" includes="${custom.jars.files}"/>
+		</delete>
+		<echo message="Custom jars deleted successfully !!"/>
+	</target>
+
+	<!--################################################ Import 3D Space Inex ###############################################-->
+	<target name="import.3DSpaceIndex" depends="init" description="Importing 3DSpaceIndex" if:set="config_file_exist"> 
+	
+	  	<replaceregexp file="${PWC_config_file}" 
+		match='@SERVER_TAGS@' 
+		replace='${enovia.sxi.config.servertags}'/> <!--replacing the server tag with the actual value from property file-->
+		
+		<echo message="Server Tags updated :  ${PWC_config_file}"/>
+		
+		<property name="full.index" value="Y">
+		<import.3DSpace.index script="deploy.tcl" procedure="import3DSpaceIndex" config.file="${PWC_config_file}" full.index="${full.index}"/> <!--import 3d space index-->
+		<echo message="Import 3D Space Index successful !!"/>
+
+	</target>
+	
+	<!--######################################### Copying files to output structure #########################################-->
+	<target name="create.output_package" depends="init" description="Create Output package"> 
+
+     	<!--Copying customization.info and Procedure for build installation.docx-->
+	    <copy todir="${output_package}/../../">
+			<fileset dir="${baseDir}" includes="customization.info"/>
+		</copy>
+
+		<echo message="customization.info file copied into output package !!"/>
+
+     	<!--Copying 3dspace.war file-->
+	    <copy todir="${output_package}/../">
+			<fileset dir="${SRV_INSTALL}/distrib_CAS" includes="3dspace.war"/>
+		</copy>
+		<echo message="3dspace.war file copied into output package !!"/>
+
+		<!--Copying Internal.war file-->
+	    <copy todir="${output_package}/../">
+			<fileset dir="${SRV_INSTALL}/distrib_NoCAS" includes="internal.war"/>
+		</copy>
+		<echo message="internal.war file copied into output package !!"/>
+
+	</target>	
+			
+</project>

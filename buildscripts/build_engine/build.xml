@@ -1,0 +1,101 @@
+<?xml version="1.0" ?>
+<project name="PWCBuildProcess" basedir="." default="jar">
+
+<property environment="env"/>
+<!-- <record name="${env.targetStructureDirName}/logs/buildLog.txt" action="start" append="true" loglevel="verbose" /> -->
+<property file="${env.SERVER_BUILD_PROPERTIES_FILE}"/>
+<property file="../build.properties"/>
+
+<taskdef resource="net/sf/antcontrib/antlib.xml">
+	<classpath>
+		<pathelement location="./tools/lib/ant-contrib-1.0b3.jar" />
+	</classpath>
+</taskdef>
+
+<property name="target.enovia.web-inf.lib" value="/server/enovia/WEB-INF/lib/" />
+
+<!-- INITIALIZING CLASSPATH : START -->
+<!--#######################################################################################################-->	
+<!-- TASK 1 -->
+<target name="SetClassPath" description="Set the required classpath elements">
+	<path id="classpath">
+		    <fileset dir="${server.enovia.web-inf.lib}/">
+			 <include name="*.jar"/>
+		   </fileset>
+		   <fileset dir="${jarDestDir}/${target.enovia.web-inf.lib}/">
+			 <include name="*.jar"/>
+		   </fileset>
+	</path>
+	<echo message="Compiling with Java ${ant.java.version}"/>
+    <echo message="Classpath = ${jarDestDir}"/>
+</target>
+<!--#######################################################################################################-->
+<!-- INITIALIZING CLASSPATH : END -->
+
+<!-- TARGET TO LOOP THE DEPENDENCY : START  -->
+<!--#######################################################################################################-->
+<!-- TASK 2 -->
+<target name="jar" depends="SetClassPath"> 
+	<echo message="${env.dependencies}" />
+	<foreach list="${env.dependencies}" target="buildJar" param="moduleName" delimiter="," />
+</target>
+<!--#######################################################################################################-->
+<!-- TARGET TO LOOP THE DEPENDENCY : END -->
+
+<!-- TARGET TO COMPILE ,BUILD & COPY JAR FOR MODULE : START -->
+<!--#######################################################################################################-->
+<target name="buildJar" description="${moduleName} Jar Creation" depends="SetClassPath"> 
+	
+	<!-- Module Name is from resolveDependency.properties -->
+	<echo message="Building Module          : ${moduleName}"/>
+	
+	<!-- Below two variable are being passed to ant at runtime -->
+	<echo message="Source Code Directory    : ${jarSrcCodeDir}/${moduleName}"/>
+	<echo message="JAR Destination Directory: ${server.enovia.web-inf.lib}/${moduleName}.jar"/>
+	
+	<!-- Build directory is being read from build.properties -->
+	<echo 
+message="Creating Build Directory : ${env.sourceDir}/distrib/class/${moduleName}/"
+/>
+	<!-- CLASS FILE DIRECTORY LOCATION -->
+	<mkdir 
+dir="${env.sourceDir}/distrib/class/${moduleName}/"
+/>
+	<javac srcdir="${jarSrcCodeDir}/${moduleName}"
+		   
+destdir="${env.sourceDir}/distrib/class/${moduleName}/"			
+		   includeantruntime="true"
+		   includes="src/**"
+		   nowarn="on">
+		 <classpath refid="classpath"/>
+	</javac>
+
+	<!-- CREATING JAR FILE AND MOVING TO DESTINATION LOCATION -->
+		
+	<jar jarfile="${jarDestDir}/${target.enovia.web-inf.lib}/${moduleName}.jar"
+basedir="${env.sourceDir}/distrib/class/${moduleName}/" 
+update="false"/>
+	<echo message="${env.SERVER_BUILD_PROPERTIES_FILE}"/>
+	<echo message="${moduleName} JAR HAS BEEN CREATED !! "/>
+	
+</target>
+<!--#######################################################################################################-->
+<!-- TARGET TO COMPILE ,BUILD & COPY JAR FOR MODULE : END -->
+
+<target name="copy" description="Copying"> 
+
+<echo message="${env.sourceDir}" />
+<echo message="${env.targetTag}" />
+<echo message="${env.originTag}" />
+
+<copydir src="${env.sourceDir}/${env.targetTag}"
+         dest="${env.sourceDir}/distrib/${env.targetTag}"
+         excludes="spinner/**"/>
+		 
+<copydir src="${env.sourceDir}/${env.originTag}"
+         dest="${env.sourceDir}/distrib/${env.originTag}"
+         excludes="spinner/**"/>
+
+</target>
+
+</project>

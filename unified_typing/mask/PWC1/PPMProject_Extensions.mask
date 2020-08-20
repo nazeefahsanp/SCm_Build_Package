@@ -1,0 +1,185 @@
+// ==============================================================================
+// Syntax: 
+//   MASK DEFAULT
+//   ENTITY <entity>
+//   ATTR   <attr>;<required>;<are_values_authorized_values>;<def_val>
+//   VALUE  <value>
+//   FUNC   <method>
+//   FATTR  <attr>;<modif>
+// with: <entity>   = entity name
+//       <attr>     = atribute name
+//       <required> = required attr logical flag (Y or N)
+//       <are_values_authorized_values>
+//                  = authorized values logical flag (Y or N):
+//                    N -> help values / Y -> authorized values
+//       <def_val>  = default value
+//       <value>    = a string value (can have blanks)
+//                    When <are_values_authorized_values> equals:
+//                    N -> an help value / Y -> an authorized value
+//       <method>   = one of the following operations:
+//                    Create         : attr appears in creation panels
+//                    Read/List/Tree : attr appears in browse/query result panels
+//                    Write          : attr appears in properties panels
+//                    Query/EZQuery  : attr appears in query condition panels
+//       <modif>    = writable field logical flag (Y or N):
+//                    N -> NOT modifiable / Y -> modifiable
+// ==============================================================================
+MASK DEFAULT
+// --------------------------------------------------
+ENTITY PPMGate_Attributes @Inherits 
+// --------------------------------------------------
+ATTR PPMGate_Status;N;Y;;$
+VALUE 
+VALUE Red
+VALUE NA
+VALUE Yellow
+VALUE Green
+FUNC Create
+FATTR PPMGate_Status;Y
+FUNC Query
+FATTR PPMGate_Status;Y
+FUNC EZQuery
+FATTR PPMGate_Status;Y
+FUNC Write
+FATTR PPMGate_Status;Y
+FUNC Read
+FATTR PPMGate_Status;Y
+FUNC Tree
+FUNC List
+FATTR PPMGate_Status;Y
+// --------------------------------------------------
+ENTITY PPMProject_Attributes @Inherits 
+// --------------------------------------------------
+ATTR PPMPlatform;N;N;;$
+ATTR PPMProduct_Line;N;Y;;$
+VALUE SKI
+VALUE ATV
+VALUE LYNX
+VALUE SSV
+VALUE 3MV
+VALUE SEA
+ATTR PPMModel_Year;N;N;;$
+ATTR PPMSector;N;Y;;$
+VALUE 
+VALUE Engineering
+VALUE Accessories
+VALUE DesignInnovation
+VALUE Sourcing
+VALUE Manufacturing
+VALUE ProjectManagement
+VALUE AfterSalesServices
+VALUE Marketing
+ATTR PPMMarket_Segment;N;N;;$
+ATTR PPMRSDE_Admissibility;N;N;;$
+ATTR PPMCost_Center;N;N;;$
+ATTR PPMProject_Manager;N;N;;$
+ATTR PPMStatus;N;Y;Active;$
+VALUE OnHold
+VALUE Active
+VALUE Cancelled
+ATTR PPMProject_Type;N;N;;$
+ATTR PPMProject_Number;N;N;;$
+FUNC Create
+FATTR PPMPlatform;Y
+FATTR PPMProduct_Line;Y
+FATTR PPMModel_Year;Y
+FATTR PPMSector;Y
+FATTR PPMMarket_Segment;Y
+FATTR PPMRSDE_Admissibility;Y
+FATTR PPMCost_Center;Y
+FATTR PPMProject_Manager;Y
+FATTR PPMStatus;Y
+FATTR PPMProject_Type;Y
+FATTR PPMProject_Number;Y
+FUNC Query
+FATTR PPMPlatform;Y
+FATTR PPMProduct_Line;Y
+FATTR PPMModel_Year;Y
+FATTR PPMSector;Y
+FATTR PPMMarket_Segment;Y
+FATTR PPMRSDE_Admissibility;Y
+FATTR PPMCost_Center;Y
+FATTR PPMProject_Manager;Y
+FATTR PPMStatus;Y
+FATTR PPMProject_Type;Y
+FATTR PPMProject_Number;Y
+FUNC EZQuery
+FATTR PPMPlatform;Y
+FATTR PPMProduct_Line;Y
+FATTR PPMModel_Year;Y
+FATTR PPMSector;Y
+FATTR PPMMarket_Segment;Y
+FATTR PPMRSDE_Admissibility;Y
+FATTR PPMCost_Center;Y
+FATTR PPMProject_Manager;Y
+FATTR PPMStatus;Y
+FATTR PPMProject_Type;Y
+FATTR PPMProject_Number;Y
+FUNC Write
+FATTR PPMPlatform;Y
+FATTR PPMProduct_Line;Y
+FATTR PPMModel_Year;Y
+FATTR PPMSector;Y
+FATTR PPMMarket_Segment;Y
+FATTR PPMRSDE_Admissibility;Y
+FATTR PPMCost_Center;Y
+FATTR PPMProject_Manager;Y
+FATTR PPMStatus;Y
+FATTR PPMProject_Type;Y
+FATTR PPMProject_Number;Y
+FUNC Read
+FATTR PPMPlatform;Y
+FATTR PPMProduct_Line;Y
+FATTR PPMModel_Year;Y
+FATTR PPMSector;Y
+FATTR PPMMarket_Segment;Y
+FATTR PPMRSDE_Admissibility;Y
+FATTR PPMCost_Center;Y
+FATTR PPMProject_Manager;Y
+FATTR PPMStatus;Y
+FATTR PPMProject_Type;Y
+FATTR PPMProject_Number;Y
+FUNC Tree
+FUNC List
+FATTR PPMPlatform;Y
+FATTR PPMProduct_Line;Y
+FATTR PPMModel_Year;Y
+FATTR PPMSector;Y
+FATTR PPMMarket_Segment;Y
+FATTR PPMRSDE_Admissibility;Y
+FATTR PPMCost_Center;Y
+FATTR PPMProject_Manager;Y
+FATTR PPMStatus;Y
+FATTR PPMProject_Type;Y
+FATTR PPMProject_Number;Y
+// --------------------------------------------------
+ENTITY PPMTask_Attributes @Inherits 
+// --------------------------------------------------
+ATTR PPMTask_Priority;N;Y;Normal;$
+VALUE High
+VALUE Critical
+VALUE Normal
+ATTR PPMTask_Status;N;Y;;$
+VALUE 
+VALUE Red
+VALUE Yellow
+VALUE Green
+FUNC Create
+FATTR PPMTask_Priority;Y
+FATTR PPMTask_Status;Y
+FUNC Query
+FATTR PPMTask_Priority;Y
+FATTR PPMTask_Status;Y
+FUNC EZQuery
+FATTR PPMTask_Priority;Y
+FATTR PPMTask_Status;Y
+FUNC Write
+FATTR PPMTask_Priority;Y
+FATTR PPMTask_Status;Y
+FUNC Read
+FATTR PPMTask_Priority;Y
+FATTR PPMTask_Status;Y
+FUNC Tree
+FUNC List
+FATTR PPMTask_Priority;Y
+FATTR PPMTask_Status;Y

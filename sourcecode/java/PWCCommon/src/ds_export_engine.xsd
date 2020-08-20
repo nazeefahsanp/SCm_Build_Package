@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema 	xmlns:xs="http://www.w3.org/2001/XMLSchema">
+		
+	<xs:annotation>
+		<xs:documentation xml:lang="en">
+		XML schema for export engine
+		</xs:documentation>
+	</xs:annotation>
+	
+	<xs:complexType name="qSelectable">
+		<xs:simpleContent>
+			<xs:extension base="xs:string">
+				<xs:attribute name="name" type="xs:string" use="required"/>
+				<xs:attribute name="multivalue" type="xs:boolean" default="false"/>
+				<xs:attribute name="isDate" type="xs:boolean" default="false"/>
+			</xs:extension>
+		</xs:simpleContent>
+	</xs:complexType>
+	
+	<xs:complexType name="qSelectables">
+		<xs:sequence>
+			<xs:element name="select" type="qSelectable" minOccurs="1" maxOccurs="unbounded"/>
+		</xs:sequence>
+	</xs:complexType>
+	
+	<xs:complexType name="qObject">
+		<xs:sequence>
+			<xs:element name="selectables" 	type="qSelectables" minOccurs="0" maxOccurs="1"/>
+			<xs:element name="relationship" type="qRelationship" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+		<xs:attribute name="type" type="xs:string" use="required"/>
+	</xs:complexType>
+	
+	<xs:complexType name="qRelationship">
+		<xs:sequence>
+			<xs:element name="selectables" 	type="qSelectables" minOccurs="0" maxOccurs="1"/>
+			<xs:element name="object" 	type="qObject" minOccurs="1" maxOccurs="unbounded"/>
+		</xs:sequence>
+		<xs:attribute name="type" type="xs:string" use="required"/>
+		<xs:attribute name="from" type="xs:boolean" use="required"/>
+		<xs:attribute name="mandatory" type="xs:boolean" default="false"/>
+		<xs:attribute name="recursive" type="xs:string" default="1"/>
+		<xs:attribute name="checker" type="xs:string"/>
+	</xs:complexType>
+	
+	<xs:complexType name="qRootObject">
+		<xs:sequence>
+			<xs:element name="selectables" 	type="qSelectables"/>
+			<xs:element name="relationship" type="qRelationship" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+		<xs:attribute name="type" type="xs:string" use="required"/>
+		<xs:attribute name="checker" type="xs:string"/>
+	</xs:complexType>
+	
+
+	<xs:element name="export">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="object" type="qRootObject"/>
+			</xs:sequence>	
+			<xs:attribute name="dateFormat" type="xs:string"></xs:attribute>
+		</xs:complexType>
+	</xs:element>
+	
+</xs:schema>

@@ -1,0 +1,35 @@
+MASK NVLR
+// -------------------------------------------------
+ENTITY AecCommonSpatialStructureElement @Inherits
+// -------------------------------------------------
+
+// -------------------------------------------------
+ENTITY AecFoundation @Inherits
+// -------------------------------------------------
+
+// -------------------------------------------------
+ENTITY AecOtherSpatialStructureElement @Inherits
+// -------------------------------------------------
+
+// -------------------------------------------------
+ENTITY AecSite @Inherits
+ATTR PLM_ExternalID;Y;N;$
+
+FUNC Create
+FATTR PLM_ExternalID;Y
+
+FUNC Write
+FATTR PLM_ExternalID;Y
+// -------------------------------------------------
+
+// -------------------------------------------------
+ENTITY AecTerrain @Inherits
+ATTR PLM_ExternalID;Y;N;$
+
+FUNC Create
+FATTR PLM_ExternalID;Y
+
+FUNC Write
+FATTR PLM_ExternalID;Y
+// -------------------------------------------------
+

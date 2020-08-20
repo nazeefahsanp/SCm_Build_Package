@@ -1,0 +1,278 @@
+package com.pwc.scm.util;
+
+import java.io.IOException;
+import java.nio.file.DirectoryStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Properties;
+
+import org.apache.log4j.Logger;
+
+/**
+ * 
+ * @author Sanjay.Meena
+ *
+ */
+public class PWCDeltaConfiguration {
+
+	/** Singleton instance declaration*/
+	private static PWCDeltaConfiguration configuration;
+	
+	/** FILE containing all delta configurations*/
+	private static final String CONFFIG_FILE_NAME = "DeltaRules_Config.properties";
+
+	/** Delta Configuration defined in DeltaRules_Config.properties*/
+	private static Map<String,String> transformedProperties = new HashMap<String,String>();
+	
+	/** Delta output generation directory*/
+	private static String deltaOutputDir;
+	
+	/** Target Tag directory*/
+	private static String targetTagDir;
+	
+	/** Origin Tag directory*/
+	private static String originTagDir;
+	
+	/** Rule type: Copy directory/file as is without any validation*/
+	public static final String AS_IS_RULE = "as_is_rule";
+
+	/** Rule type: File change check only*/
+	public static final String DELTA_FILE_RULE = "delta_file_rule";
+	
+	/** Rule type: File content check*/
+	public static final String DELTA_FILE_CONTENT_RULE = "delta_file_content_rule";
+	
+	/** Rule type: Related File check*/
+	public static final String RELATED_FILE_RULE = "related_file_rule";
+
+	/** Rule type: Related File content check*/
+	public static final String RELATED_FILE_CONTENT_RULE = "related_file_content_rule";
+	
+	/** Spinner Directory Name*/
+	public static final String SPINNER = "Spinner";
+	
+	/** Configuration to store primary key columns for Spinner Files*/
+	private static Map<String, Integer>  primaryKeyColumns= new HashMap<String, Integer>();
+	
+
+	/** The logger. */
+	private static Logger logger = Logger.getLogger(PWCDeltaConfiguration.class);
+
+	
+	
+
+	/** Private constructor*/
+	private PWCDeltaConfiguration() {
+	}
+	
+	/** Public method to get the only object of this class*/
+	public static synchronized PWCDeltaConfiguration getInstance() {
+		if(configuration == null) {
+			configuration = new PWCDeltaConfiguration();
+			logger.info("Created Singleton object");
+		}
+		
+		return configuration;
+	}
+	
+	/**
+	 * Method to initialize & build configuration, This will be used to get rules during delta extraction process
+	 * @param _deltaOutputDir
+	 * @param _targetTagDir
+	 * @param _originTagDir
+	 * @throws IOException
+	 */
+	public void init(String _deltaOutputDir, String _targetTagDir, String _originTagDir) throws IOException {
+		logger.info("Initializing Delta configuration: START");
+		
+		targetTagDir = _targetTagDir;
+	    deltaOutputDir = _deltaOutputDir;
+	    originTagDir = _originTagDir;
+
+	    //build configuration
+	    buildConfiguration();
+	    logger.info("Initializing Delta configuration: END");
+		
+	}
+
+	/**
+	 * Loads configuration and transform the configuration keys to lower case. 
+	 * it also builds configuration for all elements by applying the parent rules.
+	 * @throws IOException
+	 */
+	private void buildConfiguration() throws IOException{
+		Properties properties = PWCDeltaExtractorUtils.readPropertiesFile(CONFFIG_FILE_NAME);
+		
+		Enumeration keylist = properties.propertyNames();
+	    while (keylist.hasMoreElements()) {
+	      String key = (String) keylist.nextElement();
+	      transformedProperties.put(key.toLowerCase(), (String)properties.get(key));
+	    }
+	    
+	    //build Primary Key column Data
+	    buildPrimaryKeyColumns();
+
+	    //load configuration for all files
+	    loadPaths(Paths.get(targetTagDir), "root", transformedProperties.get("root"), transformedProperties.get("root.class"), null);	
+	}
+
+	/**
+	 * 
+	 */
+	public void buildPrimaryKeyColumns() {
+		//Business
+		primaryKeyColumns.put("SpinnerAttributeData.xls", 2);
+	    primaryKeyColumns.put("SpinnerChannelData.xls", 2);
+	    primaryKeyColumns.put("SpinnerCommandData.xls", 2);
+	    primaryKeyColumns.put("SpinnerExpresionData.xls", 2);
+	    primaryKeyColumns.put("SpinnerGroupData.xls", 2);
+	    primaryKeyColumns.put("SpinnerInquiryData.xls", 2);
+	    primaryKeyColumns.put("SpinnerInterfaceData.xls", 2);
+	    primaryKeyColumns.put("SpinnerMenuData.xls", 2);
+	    primaryKeyColumns.put("SpinnerPageData.xls", 2);
+	    primaryKeyColumns.put("SpinnerPolicyData.xls", 2);
+	    primaryKeyColumns.put("SpinnerPolicyStateData.xls", 2);
+	    primaryKeyColumns.put("SpinnerPortalData.xls", 2);
+	    primaryKeyColumns.put("SpinnerProgramData.xls", 2);
+	    primaryKeyColumns.put("SpinnerPropertyData.xls", 2);
+	    primaryKeyColumns.put("SpinnerRelationshipData.xls", 2);
+	    primaryKeyColumns.put("SpinnerRoleData.xls", 2);
+	    primaryKeyColumns.put("SpinnerRuleData.xls", 2);
+	    primaryKeyColumns.put("SpinnerTableData.xls", 2);
+	    primaryKeyColumns.put("SpinnerTableColumnData.xls", 2); 
+	    primaryKeyColumns.put("SpinnerTriggerData.xls", 2);
+	    primaryKeyColumns.put("SpinnerTypeData.xls", 2);
+	    primaryKeyColumns.put("SpinnerWebFormData.xls", 2);
+	    primaryKeyColumns.put("SpinnerWebFormFieldData.xls", 2);
+	    
+	    //Relationships
+	    primaryKeyColumns.put("rel-b2b_eService Number Generator.xls", 4);
+	    primaryKeyColumns.put("rel-b2b_eService Additional Object.xls", 3);
+	    
+	    //Objects
+	    primaryKeyColumns.put("bo_eService Trigger Program Parameters.xls", 3);
+	    primaryKeyColumns.put("bo_eService Object Generator.xls", 3);
+	    primaryKeyColumns.put("bo_eService Number Generator.xls", 3);
+	    
+	    
+	    
+	}
+
+
+	/**
+	 * Walk through the target directory structure and set configuration for all files
+	 * @param targetTagPath
+	 * @param parentConfKey
+	 * @param parentConfValue
+	 * @param parentConfNewOrChangedClassValue
+	 * @param parentConfNewClassValue
+	 * @throws IOException
+	 */
+	private void loadPaths(Path targetTagPath, String parentConfKey, String parentConfValue, 
+			String parentConfNewOrChangedClassValue, String parentConfNewClassValue) throws IOException {
+		try (DirectoryStream<Path> stream = Files.newDirectoryStream(targetTagPath)) {
+	    	
+	        for (Path fileEntry : stream) {
+	        	/** Check if it is file, if yes than extract the file name without extension */
+	        	String fileName = fileEntry.getFileName().toString().toLowerCase();
+				/*
+				 * if(fileName.indexOf(".") > 0) { fileName= fileName.substring(0,
+				 * fileName.lastIndexOf(".")); }
+				 */
+				
+				/** For building rules for Single Rule/Class configuration*/
+				String confRuleKey = parentConfKey + "." + fileName ;
+				String confRuleValue = (String) transformedProperties.get(confRuleKey);
+				//System.out.println("confRuleKey: "+ confRuleKey + "   confRuleValue:"+confRuleValue);
+	        	
+				String confClassKey = parentConfKey + "." + fileName + ".class";
+	        	String confClassValue = (String) transformedProperties.get(confClassKey);
+	        	//System.out.println("confClassKey : "+ confClassKey + "   confClassValue:"+confClassValue);
+				
+				
+	        	/** For building rules for Two Rule/Class configuration like ChangedLine & NewLine*/
+				if((confRuleValue != null && confRuleValue.contains(DELTA_FILE_CONTENT_RULE)) || 
+						(confRuleValue == null && parentConfValue.contains(DELTA_FILE_CONTENT_RULE))){
+				
+					//For Two Class rules like: delta_file_content_rule (changed line & new line)
+					String confChangedFileClassKey = parentConfKey + "." + fileName + ".changedfile.class";
+					String confNewFileClassKey = parentConfKey + "." + fileName + ".newfile.class";
+		        	String confChangedFileClassValue = (String) transformedProperties.get(confChangedFileClassKey);
+		        	String confNewFileClassValue = (String) transformedProperties.get(confNewFileClassKey);
+					
+		        	//System.out.println("confChangedFileClassKey : "+ confChangedFileClassKey + "   confChangedFileClassValue:"+confChangedFileClassValue);
+		        	//System.out.println("confNewFileClassKey : "+ confNewFileClassKey + "   confNewFileClassValue:"+confNewFileClassValue);
+		        	
+		        	if(confRuleValue == null) {
+		        		confRuleValue = parentConfValue;
+		        		confChangedFileClassValue = parentConfNewOrChangedClassValue;
+		        		confNewFileClassValue = parentConfNewClassValue;
+		        		
+		        		transformedProperties.put(confRuleKey, confRuleValue);
+		        		transformedProperties.put(confChangedFileClassKey, confChangedFileClassValue);
+		        		transformedProperties.put(confNewFileClassKey, confNewFileClassValue);
+		        	}
+		        	
+		        	if (Files.isDirectory(fileEntry) && confRuleValue.contains(DELTA_FILE_CONTENT_RULE)) {
+		        		loadPaths(fileEntry,confRuleKey, confRuleValue, confChangedFileClassValue, confNewFileClassValue);
+	                }
+		        	
+				}else {
+					
+					/** For building rules for Single Rule/Class configuration*/
+		        	if(confRuleValue == null) {
+		        		confRuleValue = parentConfValue;
+		        		confClassValue = parentConfNewOrChangedClassValue;
+		        		transformedProperties.put(confRuleKey, confRuleValue);
+		        		transformedProperties.put(confClassKey, confClassValue);
+		        	}
+		        	if (Files.isDirectory(fileEntry) && confRuleValue.contains(DELTA_FILE_RULE)) {
+	                    loadPaths(fileEntry,confRuleKey, confRuleValue, confClassValue, null);
+	                }
+		        	
+				}
+	        }
+	    }
+	}
+
+	/**
+	 * @return the transformedProperties
+	 */
+	public Map<String,String> getTransformedProperties() {
+		return transformedProperties;
+	}
+
+	/**
+	 * @return the deltaOutputDir
+	 */
+	public String getDeltaOutputDir() {
+		return deltaOutputDir;
+	}
+
+	/**
+	 * @return the targetTagDir
+	 */
+	public String getTargetTagDir() {
+		return targetTagDir;
+	}
+
+	/**
+	 * @return the originTagDir
+	 */
+	public String getOriginTagDir() {
+		return originTagDir;
+	}
+
+	/**
+	 * @return the primaryKeyColumns Count
+	 */
+	public Integer getPrimaryKeyColumnCount(String fileName) {
+		Integer count = primaryKeyColumns.get(fileName);
+		return count == null ? 0:count;
+	}
+
+}

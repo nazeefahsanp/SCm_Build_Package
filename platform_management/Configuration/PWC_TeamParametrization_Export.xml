@@ -1,0 +1,37 @@
+<?xml version="1.0" ?>
+<TeamParameterization date="Wed Nov 06 09:32:42 CEST 2019" version="3DEXPERIENCE R2019x HotFix 5">
+<!--Exported parameters XML file should never be modified manually. Modifying such file and reimporting it can trigger major impacts on your environment !--><Parameter description="Boolean attribute -BOM ITEM- on VPMReference" name="AddAttribute" id="Param_000001" category="AttributeDef">VPMReference|Boolean|BOM_ITEM|BOM ITEM|FALSE|TRUE,FALSE|TRUE|FALSE,TRUE,FALSE,FALSE|FALSE|TRUE|</Parameter>
+<Parameter description="Attributes order on VPMReference (BOM ITEM)" name="AddAttributeOrder" id="Param_000002" category="AttributeDef">VPMReference|BOM ITEM</Parameter>
+<Parameter description="Parameter WinCommand of domain DataAccessRight" name="WinCommand" id="Param_000003" category="DataAccessRight">Leader</Parameter>
+<Parameter description="Parameter ExtendViewer of domain DataAccessRight" name="ExtendViewer" id="Param_000004" category="DataAccessRight">Enabled</Parameter>
+<Parameter description="Parameter StrictExternalPublicAccess of domain DataAccessRight" name="StrictExternalPublicAccess" id="Param_000005" category="DataAccessRight">Enabled</Parameter>
+<Parameter description="Parameter MultiCxtPrivateReadAccess of domain DataAccessRight" name="MultiCxtPrivateReadAccess" id="Param_000006" category="DataAccessRight">Enabled</Parameter>
+<Parameter description="Parameter AllowFrozenContentMod of domain DataAccessRight" name="AllowFrozenContentMod" id="Param_000007" category="DataAccessRight">Enabled</Parameter>
+<Parameter description="Parameter AllowReleasedContentMod of domain DataAccessRight" name="AllowReleasedContentMod" id="Param_000008" category="DataAccessRight">Enabled</Parameter>
+<Parameter description="Parameter StrictOwnershipOnDefinition of domain DataAccessRight" name="StrictOwnershipOnDefinition" id="Param_000009" category="DataAccessRight">Disabled</Parameter>
+<Parameter description="Parameter StrictOwnershipOnEvaluation of domain DataAccessRight" name="StrictOwnershipOnEvaluation" id="Param_000010" category="DataAccessRight">Disabled</Parameter>
+<Parameter description="Parameter AutoReserveOnDefinition of domain DataAccessRight" name="AutoReserveOnDefinition" id="Param_000011" category="DataAccessRight"></Parameter>
+<Parameter description="Parameter StrictLocking of domain DataAccessRight" name="StrictLocking" id="Param_000012" category="DataAccessRight">Disabled</Parameter>
+<Parameter description="Parameter ExtendExperimenter of domain DataAccessRight" name="ExtendExperimenter" id="Param_000013" category="DataAccessRight">Enabled</Parameter>
+<Parameter description="Parameter StrictOrganizationOwnership of domain DataAccessRight" name="StrictOrganizationOwnership" id="Param_000014" category="DataAccessRight">Enabled</Parameter>
+<Parameter description="Parameter StrictOrganizationOwnershipOnContentCategory of domain DataAccessRight" name="StrictOrganizationOwnershipOnContentCategory" id="Param_000015" category="DataAccessRight">Definition,Evaluation,Resource,Management</Parameter>
+<Parameter description="Parameter MultiCxtModifyAccess of domain DataAccessRight" name="MultiCxtModifyAccess" id="Param_000016" category="DataAccessRight">Enabled</Parameter>
+<Parameter description="Parameter MultiCxtPrivateConnectAccess of domain DataAccessRight" name="MultiCxtPrivateConnectAccess" id="Param_000017" category="DataAccessRight">Enabled</Parameter>
+<Parameter description="Parameter StrictVersioning of domain DataAccessRight" name="StrictVersioning" id="Param_000018" category="DataAccessRight">Disabled</Parameter>
+<Parameter description="Parameter AllowReviseOfReservedContent of domain DataAccessRight" name="AllowReviseOfReservedContent" id="Param_000019" category="DataAccessRight">Disabled</Parameter>
+<Parameter description="Parameter AutoPromoteFirstMinorRev of domain DataAccessRight" name="AutoPromoteFirstMinorRev" id="Param_000020" category="DataAccessRight">Enabled</Parameter>
+<Parameter description="Parameter AutoPromoteNextMinorRev of domain DataAccessRight" name="AutoPromoteNextMinorRev" id="Param_000021" category="DataAccessRight">Enabled</Parameter>
+<Parameter description="Parameter AuthorizedRolesChangingResponsible of domain DataAccessRight" name="AuthorizedRolesChangingResponsible" id="Param_000022" category="DataAccessRight">Administrator_Owner_Leader_Author_Contributor_Reader</Parameter>
+<Parameter description="Parameter AuthorizedRolesChangingOrganization of domain DataAccessRight" name="AuthorizedRolesChangingOrganization" id="Param_000023" category="DataAccessRight">Administrator_Owner_Leader_Author_Contributor_Reader</Parameter>
+<Parameter description="Parameter AuthorizedRolesChangingProject of domain DataAccessRight" name="AuthorizedRolesChangingProject" id="Param_000024" category="DataAccessRight">Administrator_Owner_Leader_Author_Contributor_Reader</Parameter>
+<Parameter description="Parameter RestrictTransferToResponsible of domain DataAccessRight" name="RestrictTransferToResponsible" id="Param_000025" category="DataAccessRight">Disabled</Parameter>
+<Parameter description="Parameter AuthoringPrivilegesOnTargetOwnership of domain DataAccessRight" name="AuthoringPrivilegesOnTargetOwnership" id="Param_000026" category="DataAccessRight">Disabled</Parameter>
+<Parameter description="Parameter ImportasNewParam of domain ExchangeServices" name="ImportasNewParam" id="Param_000027" category="ExchangeServices">Author,Leader</Parameter>
+<Parameter description="Parameter ImportasRefParam of domain ExchangeServices" name="ImportasRefParam" id="Param_000028" category="ExchangeServices">Leader</Parameter>
+<Parameter description="Parameter ExportParam of domain ExchangeServices" name="ExportParam" id="Param_000029" category="ExchangeServices">Author,Leader</Parameter>
+<Parameter description="Parameter DetachParam of domain ExchangeServices" name="DetachParam" id="Param_000030" category="ExchangeServices">Owner,Leader</Parameter>
+<Parameter description="Parameter DelegateWaiveParam of domain ExchangeServices" name="DelegateWaiveParam" id="Param_000031" category="ExchangeServices">Leader</Parameter>
+<Parameter description="Parameter RevokeParam of domain ExchangeServices" name="RevokeParam" id="Param_000032" category="ExchangeServices">Owner,Leader</Parameter>
+<Parameter description="Parameter RepairSiteOwnershipParam of domain ExchangeServices" name="RepairSiteOwnershipParam" id="Param_000033" category="ExchangeServices">Admin</Parameter>
+<Parameter description="Parameter CoexAdminParam of domain ExchangeServices" name="CoexAdminParam" id="Param_000034" category="ExchangeServices">Owner,Leader</Parameter>
+</TeamParameterization>

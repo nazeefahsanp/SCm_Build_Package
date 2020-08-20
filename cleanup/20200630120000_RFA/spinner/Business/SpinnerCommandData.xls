@@ -1,0 +1,2 @@
+Name	Registry Name	Description	Label	Href	Alt	Setting Name (use "|" delim)	Setting Value (use "|" delim)	Users (use "|" delim)	Hidden (boolean)	Unblock (use "|" delim)	Icon File
+<<PWC_AEFReloadCacheToolbar>>	PWC_AEFReloadCacheToolbar	Reload Cache	emxNavigator.UIMenu.ReloadCache	emxReloadCache.jsp	emxNavigator.UIMenu.ReloadCache	Image | Registered Suite | Target Location	${COMMON_DIR}/images/iconActionReloadCache.gif | Framework | hiddenFrame	Administration Manager | VPLMAdmin	FALSE	

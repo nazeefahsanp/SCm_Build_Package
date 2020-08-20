@@ -1,0 +1,132 @@
+<?xml version="1.0"?>
+<!DOCTYPE rdf:RDF [
+	<!ENTITY xml "http://www.w3.org/XML/1998/namespace" >
+	<!ENTITY xsd "http://www.w3.org/2001/XMLSchema#" >
+	<!ENTITY rdf "http://www.w3.org/1999/02/22-rdf-syntax-ns#" >
+	<!ENTITY rdfs "http://www.w3.org/2000/01/rdf-schema#" >
+	<!ENTITY owl "http://www.w3.org/2002/07/owl#" >
+	<!ENTITY ds6w "http://www.3ds.com/vocabularies/ds6w#" >
+]>
+
+<rdf:RDF
+	xmlns:xsd="http://www.w3.org/2001/XMLSchema#"
+	xmlns:xml="http://www.w3.org/XML/1998/namespace"
+	xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+	xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+	xmlns:owl="http://www.w3.org/2002/07/owl#"
+	xmlns:ds6w="http://www.3ds.com/vocabularies/ds6w#"
+	xmlns:PWCm6w="http://www.3ds.com/vocabularies/PWC/"
+	xml:base="http://www.3ds.com/vocabularies/PWC/">
+
+	<owl:Ontology rdf:about="http://www.3ds.com/vocabularies/PWC/">
+		<rdfs:label xml:lang="en">PWC 6W Vocabulary</rdfs:label>
+		<rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string">This ontology defines the PWC Enterprise vocabulary for 6W tags.</rdfs:comment>
+		<owl:versionInfo>R2016x</owl:versionInfo>
+	</owl:Ontology>
+
+	<owl:DatatypeProperty rdf:about="PWCModelType">
+		<rdfs:label xml:lang="en">PWCM_MODEL_TYPE</rdfs:label>
+		<rdfs:subPropertyOf rdf:resource="&ds6w;what"/>
+		<rdfs:range rdf:resource="&xsd;string"/>
+		<rdfs:comment xml:lang="en">PWC custom 6w tag for attribute PWCM_MODEL_TYPE</rdfs:comment>
+	</owl:DatatypeProperty>
+	
+	<owl:DatatypeProperty rdf:about="PWCReference">
+		<rdfs:label xml:lang="en">PWCM_REFERENCE</rdfs:label>
+		<rdfs:subPropertyOf rdf:resource="&ds6w;what"/>
+		<rdfs:range rdf:resource="&xsd;string"/>
+		<rdfs:comment xml:lang="en">PWC custom 6w tag for attribute PWCM_REFERENCE</rdfs:comment>
+	</owl:DatatypeProperty>
+	
+	<owl:DatatypeProperty rdf:about="PWCMfgProcess">
+		<rdfs:label xml:lang="en">PWCM_MFG_PROCESS</rdfs:label>
+		<rdfs:subPropertyOf rdf:resource="&ds6w;what"/>
+		<rdfs:range rdf:resource="&xsd;string"/>
+		<rdfs:comment xml:lang="en">PWC custom 6w tag for attribute PWCM_MFG_PROCESS</rdfs:comment>
+	</owl:DatatypeProperty>
+	
+	<owl:DatatypeProperty rdf:about="PWCRawMaterialThickness">
+		<rdfs:label xml:lang="en">PWCM_RAW_MATERIAL_THICKNESS</rdfs:label>
+		<rdfs:subPropertyOf rdf:resource="&ds6w;what"/>
+		<rdfs:range rdf:resource="&xsd;double"/>
+		<rdfs:comment xml:lang="en">PWC custom 6w tag for attribute PWCM_RAW_MATERIAL_THICKNESS</rdfs:comment>
+	</owl:DatatypeProperty>
+	
+	<owl:DatatypeProperty rdf:about="PWCRawMaterialMaxAllowedThickness">
+		<rdfs:label xml:lang="en">PWCM_RAW_MATERIAL_MAX_ALLOWED_THICKNESS</rdfs:label>
+		<rdfs:subPropertyOf rdf:resource="&ds6w;what"/>
+		<rdfs:range rdf:resource="&xsd;"/>
+		<rdfs:comment xml:lang="en">PWC MAS custom 6w tag for attribute PWCM_RAW_MATERIAL_MAX_ALLOWED_THICKNESS</rdfs:comment>
+	</owl:DatatypeProperty>
+	
+	<owl:DatatypeProperty rdf:about="PWCRawMaterialOutsideDiameter">
+		<rdfs:label xml:lang="en">PWCM_RAW_MATERIAL_OUTSIDE_DIAMETER</rdfs:label>
+		<rdfs:subPropertyOf rdf:resource="&ds6w;what"/>
+		<rdfs:range rdf:resource="&xsd;double"/>
+		<rdfs:comment xml:lang="en">PWC custom 6w tag for attribute PWCM_RAW_MATERIAL_OUTSIDE_DIAMETER</rdfs:comment>
+	</owl:DatatypeProperty>
+	
+	<owl:DatatypeProperty rdf:about="PWCRawMaterialMaxAllowedOutsideDiameter">
+		<rdfs:label xml:lang="en">PWCM_RAW_MATERIAL_MAX_ALLOWED_OUTSIDE_DIAMETER</rdfs:label>
+		<rdfs:subPropertyOf rdf:resource="&ds6w;what"/>
+		<rdfs:range rdf:resource="&xsd;double"/>
+		<rdfs:comment xml:lang="en">PWC custom 6w tag for attribute PWCM_RAW_MATERIAL_MAX_ALLOWED_OUTSIDE_DIAMETER</rdfs:comment>
+	</owl:DatatypeProperty>
+	
+	<owl:DatatypeProperty rdf:about="PWCRawMaterialInsideDiameter">
+		<rdfs:label xml:lang="en">PWCM_RAW_MATERIAL_INSIDE_DIAMETER</rdfs:label>
+		<rdfs:subPropertyOf rdf:resource="&ds6w;what"/>
+		<rdfs:range rdf:resource="&xsd;double"/>
+		<rdfs:comment xml:lang="en">PWC custom 6w tag for attribute PWCM_RAW_MATERIAL_INSIDE_DIAMETER</rdfs:comment>
+	</owl:DatatypeProperty>
+	
+	<owl:DatatypeProperty rdf:about="PWCRawMaterialLength">
+		<rdfs:label xml:lang="en">PWCM_RAW_MATERIAL_LENGTH</rdfs:label>
+		<rdfs:subPropertyOf rdf:resource="&ds6w;what"/>
+		<rdfs:range rdf:resource="&xsd;double"/>
+		<rdfs:comment xml:lang="en">PWC custom 6w tag for attribute PWCM_RAW_MATERIAL_LENGTH</rdfs:comment>
+	</owl:DatatypeProperty>
+	
+	<owl:DatatypeProperty rdf:about="PWCmRawMaterialWidth">
+		<rdfs:label xml:lang="en">PWCM_RAW_MATERIAL_WIDTH</rdfs:label>
+		<rdfs:subPropertyOf rdf:resource="&ds6w;what"/>
+		<rdfs:range rdf:resource="&xsd;double"/>
+		<rdfs:comment xml:lang="en">PWC MAS custom 6w tag for attribute PWCM_RAW_MATERIAL_WIDTH</rdfs:comment>
+	</owl:DatatypeProperty>
+	
+	<owl:DatatypeProperty rdf:about="PWCGrainDirectionL">
+		<rdfs:label xml:lang="en">PWCM_GRAIN_DIRECTION_L</rdfs:label>
+		<rdfs:subPropertyOf rdf:resource="&ds6w;what"/>
+		<rdfs:range rdf:resource="&xsd;string"/>
+		<rdfs:comment xml:lang="en">PWC custom 6w tag for attribute PWCM_GRAIN_DIRECTION_L</rdfs:comment>
+	</owl:DatatypeProperty>
+	
+	<owl:DatatypeProperty rdf:about="PWCGrainDirectionLT">
+		<rdfs:label xml:lang="en">PWCM_GRAIN_DIRECTION_LT</rdfs:label>
+		<rdfs:subPropertyOf rdf:resource="&ds6w;what"/>
+		<rdfs:range rdf:resource="&xsd;string"/>
+		<rdfs:comment xml:lang="en">PWC custom 6w tag for attribute PWCM_GRAIN_DIRECTION_LT</rdfs:comment>
+	</owl:DatatypeProperty>
+	
+	<owl:DatatypeProperty rdf:about="PWCMakeFrom">
+		<rdfs:label xml:lang="en">PWCM_MAKE_FROM</rdfs:label>
+		<rdfs:subPropertyOf rdf:resource="&ds6w;what"/>
+		<rdfs:range rdf:resource="&xsd;string"/>
+		<rdfs:comment xml:lang="en">PWC custom 6w tag for attribute PWCM_MAKE_FROM</rdfs:comment>
+	</owl:DatatypeProperty>
+	
+	<owl:DatatypeProperty rdf:about="PWCCageCode">
+		<rdfs:label xml:lang="en">PWCM_CAGE_CODE</rdfs:label>
+		<rdfs:subPropertyOf rdf:resource="&ds6w;what"/>
+		<rdfs:range rdf:resource="&xsd;string"/>
+		<rdfs:comment xml:lang="en">PWC custom 6w tag for attribute PWCM_CAGE_CODE</rdfs:comment>
+	</owl:DatatypeProperty>
+	
+	<owl:DatatypeProperty rdf:about="PWCDrawingType">
+		<rdfs:label xml:lang="en">PWCM_DRAWING_TYPE</rdfs:label>
+		<rdfs:subPropertyOf rdf:resource="&ds6w;what"/>
+		<rdfs:range rdf:resource="&xsd;string"/>
+		<rdfs:comment xml:lang="en">PWC custom 6w tag for attribute PWCM_DRAWING_TYPE</rdfs:comment>
+	</owl:DatatypeProperty>
+
+</rdf:RDF>
